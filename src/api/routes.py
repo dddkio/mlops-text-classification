@@ -24,8 +24,12 @@ async def predict_sentiment(
         processed_text = preprocessor.clean_text(request.text)
         prediction = model.predict(processed_text)
         return {"prediction": prediction}
+    except ValueError as e:
+        raise HTTPException(status_code=400, detail=f"Invalid input: {str(e)}")
+    except RuntimeError as e:
+        raise HTTPException(status_code=500, detail=f"Model error: {str(e)}")
     except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
+        raise HTTPException(status_code=500, detail=f"Unexpected error: {str(e)}")
 
 @router.post("/batch-predict")
 async def batch_predict(
@@ -36,5 +40,9 @@ async def batch_predict(
         processed_texts = preprocessor.preprocess_data(request.texts)
         predictions = [model.predict(text) for text in processed_texts]
         return {"predictions": predictions}
+    except ValueError as e:
+        raise HTTPException(status_code=400, detail=f"Invalid input: {str(e)}")
+    except RuntimeError as e:
+        raise HTTPException(status_code=500, detail=f"Model error: {str(e)}")
     except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
+        raise HTTPException(status_code=500, detail=f"Unexpected error: {str(e)}")
