@@ -1,0 +1,22 @@
+model:
+  name: bert
+  type: bert-base-uncased
+  num_classes: 13
+  max_length: 128
+  batch_size: 32
+  learning_rate: 2e-5
+  num_epochs: 3
+
+data:
+  train_path: data/train/train.csv
+  test_path: data/test/test.csv
+  validation_split: 0.1
+
+api:
+  host: 0.0.0.0
+  port: 8000
+  debug: false
+
+monitoring:
+  metrics_path: monitoring/metrics
+  drift_detection_threshold: 0.05
