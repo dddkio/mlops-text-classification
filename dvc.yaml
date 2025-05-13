@@ -1,0 +1,26 @@
+stages:
+  train:
+    cmd: python src/train.py
+    deps:
+      - data/train.csv
+      - data/test.csv
+      - src/models/bert_model.py
+    params:
+      - model.num_classes
+      - model.learning_rate
+      - model.batch_size
+      - model.num_epochs
+    outs:
+      - models/bert
+    metrics:
+      - metrics/train_metrics.json:
+          cache: false
+
+  evaluate:
+    cmd: python src/evaluate.py
+    deps:
+      - models/bert
+      - data/test.csv
+    metrics:
+      - metrics/evaluation.json:
+          cache: false

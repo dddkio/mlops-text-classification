@@ -1,12 +1,12 @@
 import torch
 import torch.nn as nn
-from transformers import BertForSequenceClassification
+from transformers import BertForSequenceClassification, BertTokenizer
 from .base_model import BaseModel
-
 class BertClassifier(BaseModel):
     def __init__(self, num_classes=13):  # 13 classes based on your data
         super().__init__()
         self.device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+        self.tokenizer = BertTokenizer.from_pretrained('bert-base-uncased')
         self.model = BertForSequenceClassification.from_pretrained(
             'bert-base-uncased',
             num_labels=num_classes
@@ -33,7 +33,6 @@ class BertClassifier(BaseModel):
                 loss = outputs.loss
                 loss.backward()
                 optimizer.step()
-    
     def predict(self, text: str) -> dict:
         self.model.eval()
         encoding = self.tokenizer.encode_plus(
@@ -52,7 +51,7 @@ class BertClassifier(BaseModel):
             )
             
         predictions = torch.softmax(outputs.logits, dim=1)
-        return {'predictions': predictions.cpu().numpy()}
+        return {'prediction': predictions.cpu().numpy().tolist()[0]}
     
     def evaluate(self, test_data):
         self.model.eval()

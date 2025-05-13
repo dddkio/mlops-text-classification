@@ -5,7 +5,7 @@ from src.api.main import app
 from src.api.auth import create_access_token
 
 # Initialize TestClient correctly
-client = TestClient(app,raise_server_exceptions=True)
+client = TestClient(app)
 
 @pytest.fixture
 def auth_token():
